@@ -7,13 +7,19 @@ for (var i in all) {
 	res.push(all[i]);
 }
 
-
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
 const options = {
 	includeScore: true,
 	ignoreFieldNorm: true,
 	useExtendedSearch: true,
 	keys: ["Code"]
+}
+
+	
+function addExam() {
+	console.log("yea");
 }
 
 var button = document.getElementById("search");
@@ -28,23 +34,37 @@ button.onclick = function(){
 	
 	var result = fuse.search(search);
 	console.log(result);
+	var n = 0
 	result.forEach(function(item) {
 		var row = out.insertRow();
 		row.insertCell(0);
+
 		var cellCode = row.insertCell(1);
 		var cellSubject = row.insertCell(2);
 		var cellPaper = row.insertCell(3);
 		var cellBoard = row.insertCell(4);
 		var cellQualification = row.insertCell(5);
+		var cellDate = row.insertCell(6);
+		var cellTime = row.insertCell(7);
+		var cellLength = row.insertCell(8);
 	
 		cellCode.innerHTML = item.item.Code;
-		cellSubject.innerHTML = item.item.Subject;
+		if ("OCR " == item.item["Exam Board"]) {
+			var s = (item.item.Subject).replace(/[()]/g, '');;
+			
+			console.log(s);
+			cellSubject.innerHTML = s;
+		} else {
+			cellSubject.innerHTML = item.item.Subject;
+		}
 		cellPaper.innerHTML = item.item.Paper;
 		cellBoard.innerHTML = item.item["Exam Board"];
 		cellQualification.innerHTML = item.item.Qualification;
+		cellDate.innerHTML = item.item.Date;
+		cellTime.innerHTML = item.item.Time;
+		cellLength.innerHTML = item.item.Length;
+		var btn_add = row.insertCell(9);
+		btn_add.innerHTML = "<button onclick=\"addExam(item.item.Code)\" id=\"add\" type=\"button\" class=\"btn btn-secondary\" data-bs-toggle=\"tooltip\" title=\"Add exam to your timetable\">+</button>"
 	});
-	
-	
-	
-};
 
+};
